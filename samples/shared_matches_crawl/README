@@ -1,0 +1,6 @@
+Program to crawl for list of all summoner ids.  Starts by building queue of all
+members of challenger tier, then searches match history of front summoner of
+the queue.  Adds all novel summoners from match history to the queue and
+continues.
+
+Q: Is this graph disconnected on average given only recent X games are grabbed from match history?
