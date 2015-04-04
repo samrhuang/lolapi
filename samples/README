@@ -1,1 +1,4 @@
 Old test code available for reference.
+
+summoner_lookup - interface for querying a specified summoner's league(s)
+shared_matches_crawl - script to search for all ids of summoners in database.
