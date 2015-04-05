@@ -1,0 +1,3 @@
+Directory for storing data
+
+game_ids - Results from querying api-challenge.  File names are the beginDate parameter to the call.

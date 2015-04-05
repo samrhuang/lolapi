@@ -1,0 +1,17 @@
+Work on src/main.py:
+  Collect data from database.
+  Determine limitations/expiration period for acquiring data (does data expire
+  8 hours after it is entered, as indicated?)
+    If so, set up automated scraper (cron?) to grab pertinent volatile info
+    (can ignore static api calls, that data should persist).
+
+Work on src/lol_api_calls.py:
+  Complete methods for more api calls.
+  Add error handling.
+
+Figure out end product/presentation
+  Website most likely
+    - Location?
+    - Framework?
+  Determine backend
+    - Database/Python/Java?
