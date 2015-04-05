@@ -3,11 +3,29 @@ Work on src/main.py:
   Determine limitations/expiration period for acquiring data (does data expire
   8 hours after it is entered, as indicated?)
     If so, set up automated scraper (cron?) to grab pertinent volatile info
-    (can ignore static api calls, that data should persist).
+    (can ignore static API calls, that data should persist).
 
-Work on src/lol_api_calls.py:
-  Complete methods for more api calls.
+Work on src/lol_API_calls.py:
+  Complete methods for more API calls.
   Add error handling.
+
+Ideas:
+  Show trending themes of (champions/items/etc) over windows with a cool visual
+  display.  Maybe something like a streamgraph for champion picks.
+
+  Could also identify when one champion is picked multiple times in a row for a
+  particular summoner.  This may suggest that the champion is "broken" or
+  otherwise considered to be very strong.
+
+  High frequency bans can also indicate the community's perceived OP champions,
+  could use a streamgraph for this as well.
+
+  Steamgraphs could be made to be interactive, clicking on a band could show
+  other statistics about the champion with item builds, etc.
+
+  Could also generate associations between champions/items, etc using
+  visualization like circular layout, using something like hierarchical edge
+  bundling.
 
 Figure out end product/presentation
   Website most likely
@@ -15,3 +33,14 @@ Figure out end product/presentation
     - Framework?
   Determine backend
     - Database/Python/Java?
+    - EDIT: Can't do a database, as the competition rules strictly forbid that.
+      Suggest using DB-like calls through the API in python/java and perform
+      joins, etc ourselves.  Alternatively, could generate a database everytime
+      we query, but that sounds horrible (and probably not the intent of the
+      competition, which presumably wants to see us stress test the api for
+      efficiency).
+    - FOLLOW UP EDIT: We maybe *can* do a database.  The rules state that we
+      shouldn't "create a database of games with the intent to redistribute."
+      But we can display statistics/other summaries based on those games.
+      Making queries in real-time to the user could be very tedious if we did
+      any sort of statistical work.
