@@ -1,0 +1,1 @@
+- It seems that the threat of data expiry isn't real; I can make the api-challenge query I made 10+ hours ago and the associated match queries and get identical results back.

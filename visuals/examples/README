@@ -1,0 +1,6 @@
+Example visualizations with fairly light javascript implementations.
+
+Consult http://d3js.org/ for more ideas/examples.
+
+steamgraph-static-random.html - Sample steamgraph generated from random data, static svg file.
+steamgraph-interactive.html - Sample steamgraph generated from fixed date, with interactive interface.
