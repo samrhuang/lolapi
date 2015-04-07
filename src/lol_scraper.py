@@ -5,6 +5,7 @@ import shutil
 import lol_api_calls as lac
 import our_utils
 
+# Scrapes all games within time range specified in config file.
 def scrape_all_games(config, region, api_key):
 
   dump_directory = config.get("Files", "outputDirectory")
@@ -65,6 +66,10 @@ def scrape_games_for_timerange(config, region, api_key, t):
   logger = our_utils.Logger(logfile_name)
 
   game_ids = lac.api_challenge_game_ids(region, api_key, t, logger)
+
+  f = open(prettyOutputFile, "w")
+  f.write(our_utils.json_pretty_print(game_ids))
+  f.close()
 
   logger.writeLog(json.dumps(game_ids))
   

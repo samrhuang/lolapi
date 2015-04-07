@@ -15,7 +15,7 @@ class Logger:
     self.logfile = open(logName, "w")
 
   def writeLog(self, msg):
-    self.logfile.write(time.strftime("[%Y-%m-%d %H:%M:%S] ", time.gmtime()) + msg)
+    self.logfile.write(time.strftime("[%Y-%m-%d %H:%M:%S GMT] ", time.gmtime()) + msg)
 
   def closeLog(self):
     self.logfile.close()

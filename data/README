@@ -1,3 +1,5 @@
 Directory for storing data
 
 game_ids - Results from querying api-challenge.  File names are the beginDate parameter to the call.
+
+scraped_data* - Scraped data grouped by time range.

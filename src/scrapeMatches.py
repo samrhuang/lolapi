@@ -33,10 +33,9 @@ def main():
     return
 
   scraperConfigFile = sys.argv[1]
-  print scraperConfigFile
   
 
-  # Read in 
+  # Read in configuration settings
   config = ConfigParser.ConfigParser()
   config.read(scraperConfigFile)
 
