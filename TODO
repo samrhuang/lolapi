@@ -27,6 +27,15 @@ Ideas:
   visualization like circular layout, using something like hierarchical edge
   bundling.
 
+  Ontology of attributes for champions: assigning tags for champions based on
+  labels given in game, or on types of cc they off, etc.  Hypothesis: champions
+  that are more "fun" are those that offer knock-up ccs (not reduced by
+  tenacity) or are "jumpy" or are untargetable.  An ontology could succinctly
+  capture these attributes and allow for efficient analysis of them.
+
+  Item recommendations:  "Champions who bought item X later bought..." or other
+  recommendations like this.
+
 Figure out end product/presentation
   Website most likely
     - Location?
