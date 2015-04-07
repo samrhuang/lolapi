@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import time
 
 def json_pretty_print(j):
   return json.dumps(j, sort_keys = True, indent = 2, separators = (",", ":"))
@@ -14,7 +15,7 @@ class Logger:
     self.logfile = open(logName, "w")
 
   def writeLog(self, msg):
-    self.logfile.write(msg)
+    self.logfile.write(time.strftime("[%Y-%m-%d %H:%M:%S] ", time.gmtime()) + msg)
 
   def closeLog(self):
     self.logfile.close()

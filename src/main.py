@@ -53,7 +53,7 @@ def process_game_stats(region, api_key, game_id):
   print our_utils.json_pretty_print(summary)
 
 def scrape_data(region, api_key):
-  lol_scraper.scrape_all_games(region, api_key, "scraped_data")
+  lol_scraper.scrape_all_games(region, api_key, "scraped_data-Apr2_part2")
 
 
 
