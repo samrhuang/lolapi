@@ -6,6 +6,17 @@ import time
 
 import lol_api_calls
 import our_utils
+import lol_scraper
+
+def get_api_key():
+  api_key_file = "api_key"
+
+  # Get the api key to use
+  f = open(api_key_file, 'r')
+  api_key = f.read().strip()
+  f.close()
+
+  return api_key
 
 def test_calls():
 
@@ -14,12 +25,7 @@ def test_calls():
 
   #lol_api_root = "https://na.api.pvp.net/api/lol/" + region
 
-  api_key_file = "api_key"
-
-  # Get the api key to use
-  f = open(api_key_file, 'r')
-  api_key = f.read().strip()
-  f.close()
+  api_key = get_api_key()
 
   epoch_time = calendar.timegm(time.gmtime())
   # Adjust epoch time to be a multiple of 5 minutes, or 300 seconds by rounding
@@ -46,10 +52,18 @@ def process_game_stats(region, api_key, game_id):
   summary = lol_api_calls.get_match(region, api_key, game_id)
   print our_utils.json_pretty_print(summary)
 
+def scrape_data(region, api_key):
+  lol_scraper.scrape_all_games(region, api_key, "scraped_data")
+
 
 
 def main():
-  test_calls()
+
+  #test_calls()
+
+  api_key = get_api_key()
+
+  scrape_data("na", api_key)
 
 if __name__ == "__main__":
   main()

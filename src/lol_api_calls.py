@@ -16,7 +16,6 @@ import time
 # Base root location of the lol api.
 lol_api_root = "https://na.api.pvp.net"
 
-
 # Method to performs actual request/call to lol api, returning a file
 # descriptor from urllib allowing one to access result.  Handles HTTP Error
 # code 429 (Rate limit exceeded), applying exponential backoff with repeated
@@ -56,18 +55,21 @@ def make_api_call_helper(url):
     print "Uh-oh... problems with: " + url
     raise
 
+def write_log(logfile, msg):
+  if logfile is not None:
+    logfile.writeLog(msg)
+  else:
+    pass
+
 # Get a list of game IDs for a 5 minute time range, starting with the given date.  beginDate is in epoch time.
-def api_challenge_game_ids(region, api_key, beginDate):
+def api_challenge_game_ids(region, api_key, beginDate, logfile = None):
 
   call_string = lol_api_root + "/api/lol/" + region + "/v4.1/game/ids?beginDate=" + str(beginDate) + "&api_key=" + api_key
 
+  write_log(logfile, call_string + "\n")
+
   f = make_api_call(call_string)
-  output = f.read()
-  return json.loads(output)
-#print output
-#print "Heya!"
-
-
+  return json.loads(f.read())
 
 
 
@@ -101,9 +103,12 @@ def api_challenge_game_ids(region, api_key, beginDate):
 #/shards
 #/shards/{region}
 
-def get_match(region, api_key, matchId):
+def get_match(region, api_key, matchId, logfile = None):
   #/api/lol/{region}/v2.2/match/{matchId}
   call_string = lol_api_root + "/api/lol/" + region + "/v2.2/match/" + str(matchId) + "?api_key=" + api_key
+
+  write_log(logfile, call_string + "\n")
+
   f = make_api_call(call_string)
   return json.loads(f.read())
 
