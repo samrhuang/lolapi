@@ -10,10 +10,11 @@ import our_utils
 def usage():
   print "Usage: " + sys.argv[0] + " <champion picks config file>"
 
-def initialize_champion_dictionary():
+def initialize_champion_dictionary(config):
   champDict = dict()
 
-  champFile = open("lol-static-data/champion/output.pretty", "r")
+#champFile = open("lol-static-data/champion/output.pretty", "r")
+  champFile = open(config.get("OnlineSettings", "originalDirectory") + os.sep + config.get("Files", "dataDirectory") + os.sep + "lol-static-data" + os.sep + "champion" + os.sep + config.get("Files", "prettyOutputName"), "r")
   champData = json.load(champFile)
   champFile.close()
 
@@ -22,18 +23,20 @@ def initialize_champion_dictionary():
 
   return champDict
 
-def aggregate_champion_picks(config):
-  champion_pick_counts = initialize_champion_dictionary()
+#def aggregate_champion_picks(config):
+def create_champion_pick_histograms(config):
 
   this_dir = os.getcwd()
   #print this_dir
   os.chdir("scraped_data-04_02")
-  scan_one_day(config, champion_pick_counts)
+  scan_one_day(config)
   os.chdir(this_dir)
 
-def scan_one_day(config, running_counts):
+def scan_one_day(config):
   scrapedConfig = ConfigParser.ConfigParser()
   scrapedConfig.read(config.get("Files", "scrapeConfigFile"))
+
+  our_utils.config_dump(config, scrapedConfig)
 
   #print os.getcwd()
   #print scrapedConfig.sections()
@@ -46,25 +49,35 @@ def scan_one_day(config, running_counts):
   start_dir = os.getcwd()
   for t in range(start_epoch, end_epoch, 300):
     # Add data from match data
-    print "Aggregating data from epoch ", t
+    print "Aggregating data from epoch", t
 
     os.chdir(str(t))
-    scan_one_epoch(config, running_counts, t)
+    scan_one_epoch(scrapedConfig, t)
     os.chdir(start_dir)
-    break
 
-def scan_one_epoch(config, running_counts, epoch):
-  game_ids = [] # This should be the output from the lol api.  We forgot to store this for easy accesiblity.
+def scan_one_epoch(config, epoch):
+  f = open(config.get("Files", "prettyOutputName"), "r")
+  game_ids = json.loads(f.read())
+  f.close()
+
+  champion_counts = initialize_champion_dictionary(config)
+
+  # Go through each game recorded in this epoch
   start_dir = os.getcwd()
   for game_id in game_ids:
     os.chdir(str(game_id))
-    scan_one_match(config, running_counts)
+    scan_one_match(config, champion_counts)
     os.chdir(start_dir)
 
-def scan_one_match(config, running_counts):
-  data_dir = "data/scraped_data-04_02"
+  f = open(config.get("Files", "championPickHistogram"), "w")
+  f.write(our_utils.json_pretty_print(champion_counts))
+  f.close()
 
-  f = open(data_dir + os.sep + "test" + os.sep + "1780429136" + os.sep + config.get("Files", "prettyOutputName"), "r")
+def scan_one_match(config, running_counts):
+#data_dir = "data/scraped_data-04_02"
+
+#f = open(data_dir + os.sep + "test" + os.sep + "1780429136" + os.sep + config.get("Files", "prettyOutputName"), "r")
+  f = open(config.get("Files", "prettyOutputName"), "r")
   match_detail = json.load(f)
   f.close()
 
@@ -104,9 +117,23 @@ def main():
   
   starting_dir = os.getcwd()
 
+  config.add_section("OnlineSettings")
+  config.set("OnlineSettings", "originalDirectory", starting_dir)
+
   os.chdir(config.get("Files", "dataDirectory"))
-  aggregate_champion_picks(config)
+#champion_pick_counts = aggregate_champion_picks(config)
+  create_champion_pick_histograms(config)
   os.chdir(starting_dir)
+
+  #sum = 0
+  #for k in champion_pick_counts.keys():
+    #sum += champion_pick_counts[k][0]
+
+  #print sum
+
+  #sorted_list = sorted(champion_pick_counts.values(), lambda x,y: cmp(x[0], y[0]))
+  #for x in sorted_list:
+    #print x
 
 if __name__ == "__main__":
   main()
