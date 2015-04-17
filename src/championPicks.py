@@ -1,5 +1,24 @@
 #!/usr/bin/env python
 
+# Script to produce histograms of champion picks for each timestamp (epoch).  A
+# histogram is built for each timestamp over all games registered by that
+# timestamp.  Histograms are stored as json in the same directory as the match
+# data being scanned.
+#
+# We assume data has been generated using scrapeMatches.py.  This means that
+# the scraped directory being scanned by this script has the following structure:
+# 
+# directory head
+#   -> a .cfg file produced by scrapeMatches.py
+#   -> a directory for each epoch that was scraped, labeled as the timestamp
+#     -> a .log showing the query run to get match ids for this epoch and the
+#        query result
+#     -> an output file with the saved query result in json format
+#     -> a directory for each game id the query returned
+#        -> a .log showing the query run to get the match summary for this
+#           match and the result
+#        -> an output file with the saved query result in json format
+
 import ConfigParser
 import os
 import sys
@@ -13,7 +32,6 @@ def usage():
 def initialize_champion_dictionary(config):
   champDict = dict()
 
-#champFile = open("lol-static-data/champion/output.pretty", "r")
   champFile = open(config.get("OnlineSettings", "originalDirectory") + os.sep + config.get("Files", "dataDirectory") + os.sep + "lol-static-data" + os.sep + "champion" + os.sep + config.get("Files", "prettyOutputName"), "r")
   champData = json.load(champFile)
   champFile.close()
@@ -23,28 +41,23 @@ def initialize_champion_dictionary(config):
 
   return champDict
 
-#def aggregate_champion_picks(config):
 def create_champion_pick_histograms(config):
 
   this_dir = os.getcwd()
-  #print this_dir
-  os.chdir("scraped_data-04_02")
+  #print ">>>", config.get("Files", "scrapedDirectory")
+  os.chdir(config.get("Files", "scrapedDirectory"))
   scan_one_day(config)
   os.chdir(this_dir)
 
 def scan_one_day(config):
-  scrapedConfig = ConfigParser.ConfigParser()
+  scrapedConfig = ConfigParser.SafeConfigParser()
   scrapedConfig.read(config.get("Files", "scrapeConfigFile"))
 
   our_utils.config_dump(config, scrapedConfig)
 
-  #print os.getcwd()
-  #print scrapedConfig.sections()
 
   start_epoch = long(scrapedConfig.get("Time Ranges", "startEpoch"))
   end_epoch = long(scrapedConfig.get("Time Ranges", "endEpoch"))
-
-  #print str(start_epoch) + " " + str(end_epoch)
 
   start_dir = os.getcwd()
   for t in range(start_epoch, end_epoch, 300):
@@ -74,23 +87,14 @@ def scan_one_epoch(config, epoch):
   f.close()
 
 def scan_one_match(config, running_counts):
-#data_dir = "data/scraped_data-04_02"
 
-#f = open(data_dir + os.sep + "test" + os.sep + "1780429136" + os.sep + config.get("Files", "prettyOutputName"), "r")
   f = open(config.get("Files", "prettyOutputName"), "r")
   match_detail = json.load(f)
   f.close()
 
-  #print match_detail
-  #print our_utils.json_pretty_print(match_detail)
-
-  #print "The match lasted " + str(match_detail.get("matchDuration")) 
-
-
   participants = match_detail.get("participants")
 
   for p in participants:
-    #print "Participant ID " + str(p.get("participantId")) + " chose champion ID " + str(p.get("championId"))
     champID = p.get("championId")
     running_counts[champID][0]+=1
 
@@ -102,26 +106,15 @@ def main():
 
   championPicksConfigFile = sys.argv[1]
 
-  config = ConfigParser.ConfigParser()
+  config = ConfigParser.SafeConfigParser()
   config.read(championPicksConfigFile)
 
-  # NOTE: We assume the configuration file is in the root directory of the data
-  # directory.
-  #scraped_data_dir = sys.argv[1]
-  #scraped_data_conffile = sys.argv[2]
 
-  #config = ConfigParser.ConfigParser()
-  #config.read(scraped_data_dir + os.sep + scraped_data_conffile)
-
-  #print scraped_data_dir, scraped_data_conffile
-  
   starting_dir = os.getcwd()
 
   config.add_section("OnlineSettings")
   config.set("OnlineSettings", "originalDirectory", starting_dir)
 
-  os.chdir(config.get("Files", "dataDirectory"))
-#champion_pick_counts = aggregate_champion_picks(config)
   create_champion_pick_histograms(config)
   os.chdir(starting_dir)
 

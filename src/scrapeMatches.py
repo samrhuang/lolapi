@@ -21,8 +21,8 @@ def get_api_key(config):
 
   return api_key
 
-def scrape_data(config, region, api_key):
-  lol_scraper.scrape_all_games(config, region, api_key)
+def scrape_data(config, api_key):
+  lol_scraper.scrape_all_games(config, api_key)
 
 
 
@@ -44,7 +44,7 @@ def main():
 
   api_key = get_api_key(config)
 
-  scrape_data(config, "na", api_key)
+  scrape_data(config, api_key)
 
 if __name__ == "__main__":
   main()

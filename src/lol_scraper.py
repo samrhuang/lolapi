@@ -6,7 +6,7 @@ import lol_api_calls as lac
 import our_utils
 
 # Scrapes all games within time range specified in config file.
-def scrape_all_games(config, region, api_key):
+def scrape_all_games(config, api_key):
 
   dump_directory = config.get("Files", "outputDirectory")
   configFileName = config.get("OnlineSettings", "scraperConfigFile")
@@ -53,11 +53,11 @@ def scrape_all_games(config, region, api_key):
     print dump_subdir
     os.mkdir(dump_subdir)
     os.chdir(dump_subdir)
-    scrape_games_for_timerange(config, region, api_key, t)
+    scrape_games_for_timerange(config, api_key, t)
     os.chdir("..")
 
-def scrape_games_for_timerange(config, region, api_key, t):
-  print "Scraping data from region " + region + ", epoch " +  str(t)
+def scrape_games_for_timerange(config, api_key, t):
+  print "Scraping data from region " + config.get("API Settings", "region") + ", epoch " +  str(t)
 
   logfile_name = config.get("Files", "logfileNames")
   prettyOutputFile = config.get("Files", "prettyOutputName")
@@ -65,7 +65,7 @@ def scrape_games_for_timerange(config, region, api_key, t):
   
   logger = our_utils.Logger(logfile_name)
 
-  game_ids = lac.api_challenge_game_ids(region, api_key, t, logger)
+  game_ids = lac.api_challenge_game_ids(config.get("API Settings", "region"), api_key, t, logger)
 
   f = open(prettyOutputFile, "w")
   f.write(our_utils.json_pretty_print(game_ids))
@@ -83,7 +83,7 @@ def scrape_games_for_timerange(config, region, api_key, t):
 
     logger = our_utils.Logger(logfile_name)
 
-    match_detail = lac.get_match(region, api_key, gid, logger)
+    match_detail = lac.get_match(config.get("API Settings", "region"), api_key, gid, logger)
 
     logger.writeLog(json.dumps(match_detail))
 
